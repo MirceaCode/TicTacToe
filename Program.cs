@@ -19,11 +19,11 @@ class Program
         Console.WriteLine("You will make your move know by entering a number, 0 - 8.\nThe number will correspond to the board position as illustrated:\n");
 
         Console.WriteLine("0 | 1 | 2");
-        Console.WriteLine("---------");
+        Console.WriteLine("- - - - -");
         Console.WriteLine("3 | 4 | 5");
-        Console.WriteLine("---------");
+        Console.WriteLine("- - - - -");
         Console.WriteLine("6 | 7 | 8");
-        Console.WriteLine("---------");
+        Console.WriteLine("- - - - -");
 
         Console.WriteLine("Do you require the first move? (y/n): ");
         string input = Console.ReadLine();
@@ -31,8 +31,6 @@ class Program
         Player currentPlayer = input.Equals("y") ? Player.XPlayer : Player.OPlayer;
 
         Console.WriteLine(currentPlayer == Player.XPlayer ? "Hope you can beat me" : "Very brave human...I will go first");
-
-        printBoard();
 
         while (true)
         {
@@ -43,6 +41,18 @@ class Program
             {
                 vector[move] = currentPlayer;
                 printBoard();
+
+                if (CheckForWin(currentPlayer))
+                {
+                    Console.WriteLine($"Player {(currentPlayer == Player.XPlayer ? "X" : "O")} wins!");
+                    break;
+                }
+
+                if (Array.IndexOf(vector, Player.None) == -1)
+                {
+                    Console.WriteLine("It's a draw!");
+                    break;
+                }
 
                 currentPlayer = (currentPlayer == Player.XPlayer) ? Player.OPlayer : Player.XPlayer;
             }
@@ -72,4 +82,21 @@ class Program
         string thirdLine = string.Format("{0} | {1} | {2}", getPlayerAsString(vector[6]), getPlayerAsString(vector[7]), getPlayerAsString(vector[8]));
         Console.WriteLine(thirdLine);
     }
+
+    static bool CheckForWin(Player player)
+    {
+        if (vector[0] == player && vector[1] == player && vector[2] == player) return true;
+        if (vector[3] == player && vector[4] == player && vector[5] == player) return true;
+        if (vector[6] == player && vector[7] == player && vector[8] == player) return true;
+
+        if (vector[0] == player && vector[3] == player && vector[6] == player) return true;
+        if (vector[1] == player && vector[4] == player && vector[7] == player) return true;
+        if (vector[2] == player && vector[5] == player && vector[8] == player) return true;
+
+        if (vector[0] == player && vector[4] == player && vector[8] == player) return true;
+        if (vector[2] == player && vector[4] == player && vector[6] == player) return true;
+
+        return false;
+    }
 }
+
