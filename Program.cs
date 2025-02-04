@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Diagnostics.Tracing;
-using System.Numerics;
-using System.Security.Cryptography;
+﻿using System;
 
 public enum Player
 {
@@ -12,9 +9,10 @@ public enum Player
 
 class Program
 {
-    static Player[] vector = {     Player.None,     Player.None,     Player.None,
-                                   Player.None,     Player.None,     Player.None,
-                                   Player.None,     Player.None,     Player.None };
+    static Player[] vector = { Player.None, Player.None, Player.None,
+                               Player.None, Player.None, Player.None,
+                               Player.None, Player.None, Player.None };
+
     static void Main()
     {
         Console.WriteLine("Welcome to Tic-Tac-Toe.");
@@ -26,11 +24,33 @@ class Program
         Console.WriteLine("---------");
         Console.WriteLine("6 | 7 | 8");
         Console.WriteLine("---------");
+
+        Console.WriteLine("Do you require the first move? (y/n): ");
+        string input = Console.ReadLine();
+
+        Player currentPlayer = input.Equals("y") ? Player.XPlayer : Player.OPlayer;
+
+        Console.WriteLine(currentPlayer == Player.XPlayer ? "Hope you can beat me" : "Very brave human...I will go first");
+
         printBoard();
 
-        string input = Console.ReadLine();
-        vector[Int32.Parse(input)] = Player.XPlayer;
-        printBoard();
+        while (true)
+        {
+            Console.WriteLine($"Player {(currentPlayer == Player.XPlayer ? "X" : "O")}'s turn. Enter where you want to put your move (0-8): ");
+            string stringInput = Console.ReadLine();
+
+            if (int.TryParse(stringInput, out int move) && move >= 0 && move <= 8 && vector[move] == Player.None)
+            {
+                vector[move] = currentPlayer;
+                printBoard();
+
+                currentPlayer = (currentPlayer == Player.XPlayer) ? Player.OPlayer : Player.XPlayer;
+            }
+            else
+            {
+                Console.WriteLine("Invalid move. Try again.");
+            }
+        }
     }
 
     static string getPlayerAsString(Player p)
@@ -38,36 +58,18 @@ class Program
         if (p == Player.None)
             return " ";
         else if (p == Player.XPlayer)
-            return "x";
+            return "X";
         else
-            return "o";
-
+            return "O";
     }
+
     static void printBoard()
     {
-
-     
-        Console.WriteLine("Do you require the first move? (y/n): ");
-        string input = Console.ReadLine();
-
-
-        if (input.Equals("y"))
-        {
-            Console.WriteLine("Hope you can beat me");
-        }
-        else if (input.Equals("n"))
-        {
-            Console.WriteLine("Very brave human...I will go first");
-        }
-     
-        
-        string firstLine = string.Format("{0}, {1}, {2}", getPlayerAsString(vector[0]), getPlayerAsString(vector[1]), getPlayerAsString(vector[2]));
+        string firstLine = string.Format("{0} | {1} | {2}", getPlayerAsString(vector[0]), getPlayerAsString(vector[1]), getPlayerAsString(vector[2]));
         Console.WriteLine(firstLine);
-        string secondLine = string.Format("{0}, {1}, {2}", getPlayerAsString(vector[3]), getPlayerAsString(vector[4]), getPlayerAsString(vector[5]));
+        string secondLine = string.Format("{0} | {1} | {2}", getPlayerAsString(vector[3]), getPlayerAsString(vector[4]), getPlayerAsString(vector[5]));
         Console.WriteLine(secondLine);
-        string thirdLine = string.Format("{0}, {1}, {2}", getPlayerAsString(vector[6]), getPlayerAsString(vector[7]), getPlayerAsString(vector[8]));
+        string thirdLine = string.Format("{0} | {1} | {2}", getPlayerAsString(vector[6]), getPlayerAsString(vector[7]), getPlayerAsString(vector[8]));
         Console.WriteLine(thirdLine);
-
     }
-
 }
